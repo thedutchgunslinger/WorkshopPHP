@@ -19,7 +19,7 @@
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     <li><a href="index.php" class="nav-link px-2 text-white">Home</a></li>
                     <li><a href="dashboard.php" class="nav-link px-2 text-secondary">Dashboard</a></li>
-                    <li><a href="#" class="nav-link px-2 text-white">About</a></li>
+                    <li><a href="about.php" class="nav-link px-2 text-white">About</a></li>
                 </ul>
 
 
@@ -40,15 +40,12 @@
 
         $id = $_GET["id"];
         $userId = $_SESSION['logId'];
-        $db = db_connect();
+        startConnection();
         //hier word de data opgehaald van het bericht met het opgegeven id
-        $sql = "SELECT * FROM berichten WHERE id = :id";
-        $stmt = $query = $db->prepare($sql);
-
-        $stmt->bindParam(':id', $id);
-        $query->execute();
-        if ($query->rowCount() > 0) {
-            while ($row = $stmt->fetch()) {
+        $query = "SELECT * FROM bericht WHERE id = '$id'";
+        $result = executeQuery($query);
+        while ($row = $result->fetch(PDO::FETCH_ASSOC))
+                {
                 //inplaats dat we de data in text laten zien stoppen we ze nu in de input veld en text veld zodat we de gegevens kunnen aanpassen.
                 echo '
 
@@ -65,11 +62,12 @@
                 <textarea class="form-control" id="exampleFormControlTextarea1" rows="10" name="bericht">' . $row["bericht"] . '</textarea>
             </div>
             <button type="submit" class="btn btn-primary">Save</button>
+            <a href="dashboard.php" class="btn btn-secondary">Cancel</a>
         </div>
     </div>
     </form>';
             }
-        }
+        
     } else {
         header("location: index.php");
     }
@@ -86,18 +84,14 @@
 
 
         //hier roepen we de functie voor met de database te verbinden uit db.php
-        $db = db_connect();
+        startConnection();
 
         //hier overschrijven we de oude gegevens van de rij met het opgeven id
-        $sql = "UPDATE berichten SET title = :title, bericht = :bericht WHERE id = :id";
+        $updateQuery = "UPDATE bericht SET title = '$title', bericht = '$bericht' WHERE id = '$id'";
 
-        //voordat we de data opsturen willen we eerste onze variabele in de query zetten
-        $stmt = $query = $db->prepare($sql);
-        $stmt->bindParam(':title', $title);
-        $stmt->bindParam(':bericht', $bericht);
-        $stmt->bindParam(':id', $id);
+        
         //nu is het tijd om de query uit te voeren
-        $query->execute();
+        executeInsertQuery($updateQuery);
         header('location: dashboard.php');
     }
     ?>

@@ -27,16 +27,16 @@
                     <li><a href="index.php" class="nav-link px-2 text-secondary">Home</a></li>
                     <?php
                     //als de gebruiker is ingelogt laten we de link naar de dashboard zien
-                    if ($_SESSION["loginstate"] == true) {
+                    if (isset($_SESSION["loginstate"]) && $_SESSION["loginstate"] == true) {
                         echo '<li><a href="dashboard.php" class="nav-link px-2 text-white">Dashboard</a></li>';
                     }
                     ?>
-                    <li><a href="#" class="nav-link px-2 text-white">About</a></li>
+                    <li><a href="about.php" class="nav-link px-2 text-white">About</a></li>
                 </ul>
 
                 <?php
                 //als de gebruiker is ingelogt willen we ook de logout knop laten zien
-                if ($_SESSION["loginstate"] == true) {
+                if (isset($_SESSION["loginstate"]) && $_SESSION["loginstate"] == true) {
                     echo '<div class="text-end">
                     <a  href="logout.php" class="btn btn-warning">Logout</a>
                 </div>';
@@ -79,22 +79,18 @@
         //voordat we het wachtwoord in de database zetten zorgen we er voor dat we het wachtwoord is gehashed is
         $wachtwoordhash = hash('sha256', $wachtwoord);
 
-        //hier roepen we de functie voor met de database te verbinden uit db.php
-        $db = db_connect();
+        // maak een connectie met de database
+        startConnection();
 
         //dit is een select query, we kijken of we iemand in de database hebben waar het wachtwoord en email het zelfde is als de ingevullde waardes
-        $sql = "SELECT * FROM gebruikers WHERE email = :email AND wachtwoord = :wachtwoord ";
+        $query = "SELECT * FROM gebruiker WHERE email = '$email' AND wachtwoord = '$wachtwoordhash'";
 
-        //voordat we de data opsturen willen we eerste onze variabele in de query zetten
-        $stmt = $query = $db->prepare($sql);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':wachtwoord', $wachtwoordhash);
-        //nu is het tijd om de query uit te voeren
-        $query->execute();
 
+        //voer de query uit
+        $result = executeQuery($query);
         //als we we een match vinden zetten we de gevens in sessie variabele zodat we ze later kunnen gebruiken
-        if ($query->rowCount() > 0) {
-            $record = $query->fetch();
+        while ($record = $result->fetch(PDO::FETCH_ASSOC))
+        {
 
 
             $_SESSION["logId"] = $record['id'];
@@ -109,17 +105,14 @@
         } 
     }
 
-    $db = db_connect();
+    startConnection();
     //in deze query willen we gegevens uit 2 tabellen ophalen, hiervoor moeten we ze aan elkaar koppelen, dit doen we op de primarey key aan de foreign key (de blauwe lijn in de database.pdf)
     //ook moeten we nu voor iedere waarden aangeven uit welke tabel de waarde komt
-    $sqlSelectAll = "SELECT berichten.*, gebruikers.voornaam FROM berichten  JOIN gebruikers ON berichten.userId = gebruikers.id ORDER BY id DESC";
-    $result = $db->query($sqlSelectAll);
+    $querySelectAll = "SELECT bericht.*, gebruiker.voornaam FROM bericht  JOIN gebruiker ON bericht.userId = gebruiker.id ORDER BY id DESC";
+    $resultPosts = executeQuery($querySelectAll);   
 
-    if ($result->rowCount() > 0) {
-        //voor iedere regel voerd die deze code opniew uit
-        //de gegevens uit de database staan tussen punten, een punt is in php een plakding, zoals je in javascript een + gebruikt om een variabele en strings aan elkaar te plakken 
-        //gebruik je in php een . 
-        while ($row = $result->fetch()) {
+   while ($row = $resultPosts->fetch(PDO::FETCH_ASSOC))
+{
             echo '
             <div class="card mx-auto m-4" style="width:800px;">
 
@@ -132,7 +125,7 @@
   </div>
             </div>';
         }
-    }
+    
     //sluit connectie
     $db = null;
 

@@ -19,7 +19,7 @@
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     <li><a href="index.php" class="nav-link px-2 text-white">Home</a></li>
                     <li><a href="dashboard.php" class="nav-link px-2 text-secondary">Dashboard</a></li>
-                    <li><a href="#" class="nav-link px-2 text-white">About</a></li>
+                    <li><a href="about.php" class="nav-link px-2 text-white">About</a></li>
                 </ul>
 
 
@@ -61,16 +61,14 @@
         $userId = $_SESSION['logId'];
 
 
-        $db = db_connect();
+        startConnection();
 
         //in deze query halen we alle berichten op die toegevoegd zijn door de ingelogde gebruiker
-        $sql = "SELECT * FROM berichten WHERE userId = :userId ORDER BY id DESC";
-        $stmt = $query = $db->prepare($sql);
-
-        $stmt->bindParam(':userId', $userId);
-        $query->execute();
-        if ($query->rowCount() > 0) {
-            while ($row = $stmt->fetch()) {
+        $query = "SELECT * FROM bericht WHERE userId = '$userId' ORDER BY id DESC";
+        
+        $result = executeQuery($query);
+        while ($row = $result->fetch(PDO::FETCH_ASSOC))
+            {
                 //bij de knoppen hebben we GET statements deze zien er zo uit: file.php?var=something
                 echo '
             <div class="card mx-auto m-4" style="width:800px;">
@@ -83,15 +81,6 @@
                 </div>
             </div>';
             }
-        } else {
-            echo '
-           <div class="card mx-auto m-4" style="width:800px;">
-
-                <div class="card-body">
-                    <h5 class="card-title text-muted">No items found</h5>
-                </div>
-            </div>';
-        }
     } else {
         header("location: index.php");
     }
@@ -108,18 +97,14 @@
 
 
         //hier roepen we de functie voor met de database te verbinden uit db.php
-        $db = db_connect();
+        startConnection();
 
         //hier voegen we de gegevens toe aan de database, we geven eerst aan waar de gegevens moeten worden ingevuld en daarna wat de data moet zijn
-        $sql = "INSERT INTO berichten (userId, title, bericht) VALUES (:userId, :title,  :bericht)";
+        $insertQuery = "INSERT INTO bericht (userId, title, bericht) VALUES ('$userId', '$title',  '$bericht')";
 
-        //voordat we de data opsturen willen we eerste onze variabele in de query zetten
-        $stmt = $query = $db->prepare($sql);
-        $stmt->bindParam(':title', $title);
-        $stmt->bindParam(':bericht', $bericht);
-        $stmt->bindParam(':userId', $userId);
+       
         //nu is het tijd om de query uit te voeren
-        $query->execute();
+        executeInsertQuery($insertQuery);
     }
     ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>

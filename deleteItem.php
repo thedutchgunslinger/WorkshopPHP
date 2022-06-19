@@ -4,12 +4,9 @@ session_start();
 $id = $_GET["id"];
 
 
-$db = db_connect();
+startConnection();
 //hier verwijdere we de item met het opgegeven id
-$sql = "DELETE FROM berichten WHERE id = :id";
-$stmt = $query = $db->prepare($sql);
-
-$stmt->bindParam(':id', $id);
-$query->execute();
+$query = "DELETE FROM bericht WHERE id = '$id'";
+executeInsertQuery($query);
 
 header('location: dashboard.php');

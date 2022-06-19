@@ -1,27 +1,52 @@
+/*
+     Opdracht:      Blogger
+     Auteur:        Noah Beij
+     Aanmaakdatum:  Juni 2022 
+     Bestandsnaam:  createDatabase.sql
+*/
+
+-- Start in master database
+USE MASTER;
+GO
+
+-- Drop in case database already exists
+DROP DATABASE IF EXISTS [bloggerdb];
+GO
+
+-- Create database called 'bloggerdb'
+CREATE DATABASE bloggerdb;
+GO
+-- Use database called 'bloggerdb'
+USE bloggerdb;
+
+
 -- Het aanmaken van de tabel Gebruikers
-CREATE TABLE `Gebruikers` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
-  `voornaam` varchar(255),
-  `achternaam` varchar(255),
-  `email` varchar(255),
-  `datum` date,
-  `wachtwoord` varchar(255)
+CREATE TABLE Gebruikers 
+(
+  id			int		NOT NULL IDENTITY(1,1),
+  voornaam		varchar NOT NULL	 (255),
+  achternaam	varchar NOT NULL	 (255),
+  email			varchar NOT NULL	 (255),
+  datum			date					  ,
+  wachtwoord	varchar NOT NULL	 (255),
+  PRIMARY KEY (id) -- met alter table en constraint
 );
 
 -- Het aanmaken van de tabel Berichten
-CREATE TABLE `Berichten` (
-  `id` int PRIMARY KEY AUTO_INCREMENT,
-  `userId` int,
-  `title` varchar(255),
-  `bericht` text
+CREATE TABLE Berichten (
+  id			int		NOT NULL	IDENTITY(1,1),
+  userId		int		NOT NULL,
+  title			varchar NOT NULL	(255),
+  bericht		text	NOT NULL
+  PRIMARY KEY (id)
 );
 
 -- Mockup data voor de tabel Gebruikers
 insert into gebruikers (voornaam, achternaam, email, datum, wachtwoord) values ('dev', 'dev', 'dev@dev.com', '2020-12-24 15:55:02', 'ef260e9aa3c673af240d17a2660480361a8e081d1ffeca2a5ed0e3219fc18567');
-insert into gebruikers (voornaam, achternaam, email, datum, wachtwoord) values ('Torbjörn', 'Grattan', 'test@test.com', '2020-08-26 03:54:25', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08');
-insert into gebruikers (voornaam, achternaam, email, datum, wachtwoord) values ('Lén', 'Giacopini', 'igiacopini2@trellian.com', '2020-08-01 18:26:28', 'be7373a7fcbb08619c63d24bd5987a2e3d6da0c0803bdd1a1f1e525a21ceccdb');
-insert into gebruikers (voornaam, achternaam, email, datum, wachtwoord) values ('Lucrèce', 'Aronov', 'maronov3@blogspot.com', '2020-06-23 03:36:47', '6a5fcdc40e774406a6297afd9b6e41937d6c33af9069cd609d92373efb1de796');
-insert into gebruikers (voornaam, achternaam, email, datum, wachtwoord) values ('Laurène', 'Leftbridge', 'gleftbridge4@thetimes.co.uk', '2020-07-26 01:54:11', 'c7879a6b648d956fe701a0a0b4b3a4a6d0a1f0a151a3993e5790f79f88f4643c');
+insert into gebruikers (voornaam, achternaam, email, datum, wachtwoord) values ('Torbjorn', 'Grattan', 'test@test.com', '2020-08-26 03:54:25', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08');
+insert into gebruikers (voornaam, achternaam, email, datum, wachtwoord) values ('Len', 'Giacopini', 'igiacopini2@trellian.com', '2020-08-01 18:26:28', 'be7373a7fcbb08619c63d24bd5987a2e3d6da0c0803bdd1a1f1e525a21ceccdb');
+insert into gebruikers (voornaam, achternaam, email, datum, wachtwoord) values ('Lucrece', 'Aronov', 'maronov3@blogspot.com', '2020-06-23 03:36:47', '6a5fcdc40e774406a6297afd9b6e41937d6c33af9069cd609d92373efb1de796');
+insert into gebruikers (voornaam, achternaam, email, datum, wachtwoord) values ('Laurene', 'Leftbridge', 'gleftbridge4@thetimes.co.uk', '2020-07-26 01:54:11', 'c7879a6b648d956fe701a0a0b4b3a4a6d0a1f0a151a3993e5790f79f88f4643c');
 
 -- Mockup data voor de tabel Berichten
 insert into berichten (userId, title, bericht) values (5, 'Nulla ac enim.', 'Maecenas leo odio, condimentum id, luctus nec, molestie sed, justo. Pellentesque viverra pede ac diam. Cras pellentesque volutpat dui.
