@@ -8,7 +8,7 @@ $pdo = null;
 function startConnection()
 {
     global $pdo;
-// Open de database connectie en ODBC driver
+    // Open de database connectie en ODBC driver
     try {
         $pdo = new PDO("odbc:odbc2sqlserver");
         $pdo->query("USE bloggerDB");
@@ -23,13 +23,13 @@ function startConnection()
 function executeQuery($sql)
 {
     global $pdo;
-// Uitvoeren van een SQl query
+    // Uitvoeren van een SQl query
     try {
-// Query uitvoeren
+        // Query uitvoeren
         $result = $pdo->query($sql);
         return $result;
     } catch (PDOException $e) {
-        echo 'Er is een probleem met ophalen van jokes: ' . $e->getMessage();
+        echo 'Er is een probleem met ophalen van de data: ' . $e->getMessage();
         die();
     }
 }
@@ -38,13 +38,13 @@ function executeQuery($sql)
 function executeInsertQuery($sql)
 {
     global $pdo;
-// Uitvoeren van een SQl query
+    // Uitvoeren van een SQl query
     try {
-// Query uitvoeren
+        // Query uitvoeren
         $result = $pdo->exec($sql);
         return $result;
     } catch (PDOException $e) {
-        echo 'Er is een probleem met ophalen van jokes: ' . $e->getMessage();
+        echo 'Er is een probleem met ophalen van de data: ' . $e->getMessage();
         die();
     }
 }

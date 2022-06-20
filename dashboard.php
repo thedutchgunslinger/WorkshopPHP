@@ -59,52 +59,35 @@
         include('db.php');
         //hier slaan we de id van de gebruiker op in een variabele
         $userId = $_SESSION['logId'];
+        // HIER HALEN WE ALLE BERICHTEN VAN INGELOGDE GEBRUIKER OP
 
 
-        startConnection();
 
         //in deze query halen we alle berichten op die toegevoegd zijn door de ingelogde gebruiker
-        $query = "SELECT * FROM bericht WHERE userId = '$userId' ORDER BY id DESC";
-        
-        $result = executeQuery($query);
-        while ($row = $result->fetch(PDO::FETCH_ASSOC))
-            {
-                //bij de knoppen hebben we GET statements deze zien er zo uit: file.php?var=something
-                echo '
-            <div class="card mx-auto m-4" style="width:800px;">
 
-                <div class="card-body">
-                    <h5 class="card-title"><strong> ' . $row["title"] . '</strong></h5>
-                    <p class="card-text"> ' . $row["bericht"] . '</p>
-                    <a href="editItem.php?id=' . $row["id"] . '" class="btn btn-primary">Edit</a>
-                    <a href="deleteItem.php?id=' . $row["id"] . '" class="btn btn-danger">Delete</a>
-                </div>
-            </div>';
-            }
+        //     echo '
+        // <div class="card mx-auto m-4" style="width:800px;">
+
+        //     <div class="card-body">
+        //         <h5 class="card-title"><strong>title</strong></h5>
+        //         <p class="card-text">bericht</p>
+        //         <a href="editItem.php?id=1" class="btn btn-primary">Edit</a>
+        //         <a href="deleteItem.php?id=1" class="btn btn-danger">Delete</a>
+        //     </div>
+        // </div>';
+
     } else {
         header("location: index.php");
     }
     //hier vangt de server de POST request op
+    // HIER VOEGEN WE EEN BERICHT IN
     if (
         $_SERVER['REQUEST_METHOD'] == "POST"
         && isset($_POST["title"]) && $_POST["title"] != ""
         && isset($_POST["bericht"]) && $_POST["bericht"] != ""
     ) {
-        //hier zetten we de POST data in een variabelle
         $title = $_POST['title'];
         $bericht = $_POST['bericht'];
-
-
-
-        //hier roepen we de functie voor met de database te verbinden uit db.php
-        startConnection();
-
-        //hier voegen we de gegevens toe aan de database, we geven eerst aan waar de gegevens moeten worden ingevuld en daarna wat de data moet zijn
-        $insertQuery = "INSERT INTO bericht (userId, title, bericht) VALUES ('$userId', '$title',  '$bericht')";
-
-       
-        //nu is het tijd om de query uit te voeren
-        executeInsertQuery($insertQuery);
     }
     ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>

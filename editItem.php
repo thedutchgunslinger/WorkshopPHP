@@ -40,13 +40,9 @@
 
         $id = $_GET["id"];
         $userId = $_SESSION['logId'];
-        startConnection();
-        //hier word de data opgehaald van het bericht met het opgegeven id
-        $query = "SELECT * FROM bericht WHERE id = '$id'";
-        $result = executeQuery($query);
-        while ($row = $result->fetch(PDO::FETCH_ASSOC))
-                {
-                //inplaats dat we de data in text laten zien stoppen we ze nu in de input veld en text veld zodat we de gegevens kunnen aanpassen.
+        // haal de gegevens op uit de database waar het id overeenkomt van de post en laad die in de form
+  
+
                 echo '
 
 <form  action="#" method="POST">
@@ -66,33 +62,24 @@
         </div>
     </div>
     </form>';
-            }
+            
         
     } else {
         header("location: index.php");
     }
 
+
+    // UPDATE DE GEGEVENS IN DE DATABASE
     if (
         $_SERVER['REQUEST_METHOD'] == "POST"
         && isset($_POST["title"]) && $_POST["title"] != ""
         && isset($_POST["bericht"]) && $_POST["bericht"] != ""
     ) {
-        //hier zetten we de POST data in een variabelle
         $title = $_POST['title'];
         $bericht = $_POST['bericht'];
 
 
 
-        //hier roepen we de functie voor met de database te verbinden uit db.php
-        startConnection();
-
-        //hier overschrijven we de oude gegevens van de rij met het opgeven id
-        $updateQuery = "UPDATE bericht SET title = '$title', bericht = '$bericht' WHERE id = '$id'";
-
-        
-        //nu is het tijd om de query uit te voeren
-        executeInsertQuery($updateQuery);
-        header('location: dashboard.php');
     }
     ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>

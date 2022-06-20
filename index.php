@@ -9,9 +9,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 
 <body>
-    
+
     <?php
-    //Voeg de database connectie in
+    //include de database functies
     include('db.php');
     //hier starten we een sessie om je login status te onthouden
     session_start();
@@ -64,7 +64,7 @@
 
     <?php
 
-              
+
 
 
     //als we een post request ontvangen waar email en wachtwoord niet leeg is gaan we kijken of de gegevens in onze database staan.
@@ -79,55 +79,31 @@
         //voordat we het wachtwoord in de database zetten zorgen we er voor dat we het wachtwoord is gehashed is
         $wachtwoordhash = hash('sha256', $wachtwoord);
 
-        // maak een connectie met de database
-        startConnection();
-
-        //dit is een select query, we kijken of we iemand in de database hebben waar het wachtwoord en email het zelfde is als de ingevullde waardes
-        $query = "SELECT * FROM gebruiker WHERE email = '$email' AND wachtwoord = '$wachtwoordhash'";
-
-
-        //voer de query uit
-        $result = executeQuery($query);
-        //als we we een match vinden zetten we de gevens in sessie variabele zodat we ze later kunnen gebruiken
-        while ($record = $result->fetch(PDO::FETCH_ASSOC))
-        {
-
-
-            $_SESSION["logId"] = $record['id'];
-            $_SESSION["logVoornaam"] = $record['voornaam'];
-            $_SESSION["logAchternaam"] = $record['achternaam'];
-            $_SESSION["logEmail"] = $record['email'];
-
-            //ook zetten we loginstate op true zodat we paginas kunnen beschermen van mensen die geen account hebben
-            $_SESSION["loginstate"] = true;
-            //vervolgens sturen we de gebruiker naar het dashboard
-            header("location: dashboard.php");
-        } 
+        //HIER KIJKEN WE OF DE GEBRUIKER IN DE DATABASE STAAT
     }
 
+
+
+    //HIER LADEN WE DE HOME FEED IN
     startConnection();
     //in deze query willen we gegevens uit 2 tabellen ophalen, hiervoor moeten we ze aan elkaar koppelen, dit doen we op de primarey key aan de foreign key (de blauwe lijn in de database.pdf)
     //ook moeten we nu voor iedere waarden aangeven uit welke tabel de waarde komt
     $querySelectAll = "SELECT bericht.*, gebruiker.voornaam FROM bericht  JOIN gebruiker ON bericht.userId = gebruiker.id ORDER BY id DESC";
-    $resultPosts = executeQuery($querySelectAll);   
+    $resultPosts = executeQuery($querySelectAll);
 
-   while ($row = $resultPosts->fetch(PDO::FETCH_ASSOC))
-{
-            echo '
+    while ($row = $resultPosts->fetch(PDO::FETCH_ASSOC)) {
+        echo '
             <div class="card mx-auto m-4" style="width:800px;">
 
                 <div class="card-body"> 
-                    <h5 class="card-title"><strong> ' . $row["title"] . '</strong></h5>
-                    <p class="card-text"> ' . $row["bericht"] . '</p>
+                    <h5 class="card-title"><strong> title</strong></h5>
+                    <p class="card-text"> bericht</p>
                 </div>
                 <div class="card-footer text-muted">
-    By  ' . $row["voornaam"] . '
-  </div>
+                     By  ' . $row["voornaam"] . '
+                </div>
             </div>';
-        }
-    
-    //sluit connectie
-    $db = null;
+    }
 
     ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
